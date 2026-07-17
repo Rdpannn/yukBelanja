@@ -2,7 +2,11 @@
 
 Aplikasi e-commerce sederhana: pembeli bisa belanja dan bayar lewat Midtrans (sandbox), penjual punya dashboard sendiri buat kelola produk & pesanan, dan admin bisa memantau seluruh sistem.
 
-**Demo:** https://yuk-belanja.vercel.app
+**Demo:**
+
+- Toko (pembeli): https://yuk-belanja.vercel.app
+- Dashboard seller: https://yuk-belanja.vercel.app/seller/login
+- Dashboard admin: https://yuk-belanja.vercel.app/admin/login
 
 ## Fitur
 
@@ -32,7 +36,7 @@ React + Vite · Tailwind CSS · Supabase (Postgres, Auth, Storage, Edge Function
 
 - **Pembeli**: daftar sendiri dari halaman utama
 - **Penjual**: daftar dari "Mulai jualan" atau upgrade lewat "Buka Toko", langsung aktif tanpa approval
-- **Admin**: dibuat manual dari dashboard Supabase (Authentication → Add user), lalu ubah role-nya jadi `admin` di tabel `profiles`. Login di `/admin/login`
+- **Admin**: login di [/admin/login](https://yuk-belanja.vercel.app/admin/login). Untuk email & password akun admin demo, hubungi 082111828930. Kalau jalanin sendiri di lokal: buat user dari dashboard Supabase (Authentication → Add user), lalu ubah role-nya jadi `admin` di tabel `profiles`
 
 ## Testing Pembayaran
 
