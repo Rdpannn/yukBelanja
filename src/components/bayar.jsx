@@ -79,6 +79,8 @@ export default function Bayar({ pesanan, total, jumlah, tutup }) {
       onSuccess: () => selesai(true),
       onPending: () => selesai(false),
       onClose: () => selesai(false),
+      // error dari midtrans: tetep dianterin ke pesanan, biar bisa coba bayar lagi / batalin
+      onError: () => selesai(false),
     })
   }
 

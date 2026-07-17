@@ -134,6 +134,35 @@ export default function Orders() {
     return true
   }
 
+  // batalin pembayaran pending lewat edge function, buat transaksi yang nyangkut
+  async function batalBayar(pid) {
+    setProses(true)
+    setError('')
+    const { data, error: err } = await supabase.functions.invoke('pay', {
+      body: { aksi: 'batal', payment_id: pid },
+    })
+    setProses(false)
+    if (err || !data?.status) {
+      setError('Waduh, ada masalah. Coba lagi ya.')
+      return false
+    }
+    // status hasil batalinnya diterapin ke semua order di payment itu
+    terapin(pid, data.status)
+    return true
+  }
+
+  // confirm batalin pembayaran yang belum dibayar
+  function konfirmBatalBayar(p) {
+    setError('')
+    setTanya({
+      teks: 'Yakin mau batalin pembayaran ini? Pesanannya ikut dibatalin dan stoknya balik.',
+      ya: 'Ya, Batalkan',
+      gak: 'Gak Jadi',
+      merah: true,
+      aksi: () => batalBayar(p.id),
+    })
+  }
+
   // confirm minta batal ke seller
   function konfirmBatal(order) {
     setError('')
@@ -251,11 +280,17 @@ export default function Orders() {
           <p className="text-sm">
             Ada {p.jumlah} pesanan yang belum kamu bayar nih.
           </p>
-          {p.token && (
-            <button onClick={() => bayar(p.id, p.token)} className={btnFill + ' shrink-0'}>
-              Bayar
+          <div className="flex gap-2 shrink-0">
+            {/* jalan keluar buat transaksi yang nyangkut (misal qr nya error) */}
+            <button onClick={() => konfirmBatalBayar(p)} className={btnMerah}>
+              Batalkan
             </button>
-          )}
+            {p.token && (
+              <button onClick={() => bayar(p.id, p.token)} className={btnFill}>
+                Bayar
+              </button>
+            )}
+          </div>
         </div>
       ))}
 

@@ -43,6 +43,9 @@ Deno.serve(async (req) => {
     // aksi "cek" = ngecek status pembayaran ke midtrans abis popup ditutup
     if (body.aksi === 'cek') return await cekStatus(supabase, user, body.payment_id)
 
+    // aksi "batal" = batalin pembayaran yang masih pending (misal qr nya error / nyangkut)
+    if (body.aksi === 'batal') return await batalPembayaran(supabase, user, body.payment_id)
+
     // default nya bikin pesanan baru dari item keranjang yang dipilih
     // origin dipake buat nentuin halaman balikan abis bayar
     return await buatPesanan(supabase, user, body, req.headers.get('origin'))
@@ -247,6 +250,29 @@ async function ambilDiskon(supabase) {
     }
   }
   return map
+}
+
+// batalin transaksi pending ke midtrans, biar order gak nyangkut nahan stok
+async function batalPembayaran(supabase, user, paymentId) {
+  // pastiin payment nya beneran punya user ini dan masih pending
+  const { data: payment } = await supabase
+    .from('payments')
+    .select('id, status')
+    .eq('id', paymentId)
+    .eq('user_id', user.id)
+    .single()
+  if (!payment) return jawab({ error: 'pembayaran gak ketemu' }, 404)
+  if (payment.status !== 'pending') return jawab({ status: payment.status })
+
+  // minta cancel ke midtrans, hasilnya gak dipake langsung
+  await fetch('https://api.sandbox.midtrans.com/v2/PAY-' + payment.id + '/cancel', {
+    method: 'POST',
+    headers: headerMidtrans(),
+  })
+
+  // abis itu tanya status kayak biasa: kalau cancel nya sukses status jadi cancel
+  // (payment hangus + order batal + stok balik), kalau ternyata keburu dibayar ya jadi paid
+  return await cekStatus(supabase, user, paymentId)
 }
 
 // ngecek status transaksi ke midtrans, dipanggil frontend abis bayar
