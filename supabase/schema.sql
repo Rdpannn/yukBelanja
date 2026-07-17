@@ -624,6 +624,9 @@ create policy "liat notif sendiri" on notifications
 create policy "update notif sendiri" on notifications
   for update using (auth.uid() = user_id);
 
+create policy "hapus notif sendiri" on notifications
+  for delete using (auth.uid() = user_id);
+
 -- policy banners: semua bisa liat (buat carousel home), cuma admin yang ngatur
 create policy "liat banner" on banners
   for select using (true);

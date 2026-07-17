@@ -88,22 +88,48 @@ export default function Notif() {
     ambil()
   }
 
+  // hapus satu notif, e distop biar kliknya gak ikut kebuka halaman notifnya
+  async function hapusNotif(n, e) {
+    e.stopPropagation()
+    await supabase.from('notifications').delete().eq('id', n.id)
+    setSemua((lama) => lama.filter((x) => x.id !== n.id))
+    // dropdown 5 terbaru + badge diitung ulang dari db
+    ambil()
+  }
+
+  // bersihin semua notif sekaligus
+  async function hapusSemua() {
+    if (!confirm('Yakin mau hapus semua notifikasi?')) return
+    await supabase.from('notifications').delete().eq('user_id', session.user.id)
+    setSemua([])
+    setList([])
+    setBelum(0)
+  }
+
   // satu baris notif, dipake di dropdown & modal
+  // pake div (bukan button) karena di dalemnya ada tombol hapus sendiri
   function baris(n) {
     return (
-      <button
+      <div
         key={n.id}
         onClick={() => klik(n)}
         className="w-full flex gap-3 px-4 py-3 text-left hover:bg-dasar/40 cursor-pointer"
       >
         {/* dot pink penanda belum dibaca */}
         <span className={'w-2 h-2 rounded-full mt-1.5 shrink-0 ' + (n.dibaca ? 'bg-transparent' : 'bg-neon')}></span>
-        <span>
+        <span className="flex-1 min-w-0">
           <span className="block text-sm font-medium">{n.judul}</span>
           <span className="block text-xs text-kabut mt-0.5">{n.isi}</span>
           <span className="block text-[11px] text-kabut mt-1">{waktu(n.created_at)}</span>
         </span>
-      </button>
+        <button
+          onClick={(e) => hapusNotif(n, e)}
+          title="Hapus notifikasi"
+          className="self-start text-kabut hover:text-merah text-base leading-none cursor-pointer shrink-0"
+        >
+          &times;
+        </button>
+      </div>
     )
   }
 
@@ -155,7 +181,10 @@ export default function Notif() {
               <p className="text-kabut text-sm text-center py-10">Belum ada notifikasi buat kamu.</p>
             ) : (
               <>
-                <div className="flex justify-end mt-2">
+                <div className="flex justify-end gap-4 mt-2">
+                  <button onClick={hapusSemua} className="text-merah text-sm font-medium cursor-pointer">
+                    Hapus Semua
+                  </button>
                   <button onClick={bacaSemua} className="text-neon text-sm font-medium cursor-pointer">
                     Tandai Semua Dibaca
                   </button>
