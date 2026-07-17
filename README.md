@@ -2,7 +2,7 @@
 
 Aplikasi e-commerce sederhana: pembeli bisa belanja dan bayar lewat Midtrans (sandbox), penjual punya dashboard sendiri buat kelola produk & pesanan, dan admin bisa memantau seluruh sistem.
 
-**Demo:** {link-vercel}
+**Demo:** https://yuk-belanja.vercel.app
 
 ## Fitur
 
