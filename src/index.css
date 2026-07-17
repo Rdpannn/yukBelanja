@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* warna sama token desain, dipake lewat class tailwind (bg-panel, text-kabut, dst) */
+@theme {
+  --color-neon: #e75e8d;
+  --color-neon-terang: #ec6090;
+  --color-merah: #e25c5c; /* buat aksi hapus, saturasinya sengaja disamain sama pink neon */
+  /* warna chip status order, saturasinya ngikutin pink neon juga */
+  --color-kuning: #e2b95c;
+  --color-biru: #5ca8e2;
+  --color-ijo: #5cc98d;
+  --color-dasar: #1f2122;
+  --color-panel: #27292a;
+  --color-naik: #353637;
+  --color-putih: #f7f7f7;
+  --color-kabut: #9a9ea2;
+  --font-sans: "Poppins", sans-serif;
+  --radius-kartu: 23px;
+  --radius-input: 11px;
+}
+
+body {
+  background-color: var(--color-dasar);
+  color: var(--color-putih);
+  font-family: var(--font-sans);
+}
